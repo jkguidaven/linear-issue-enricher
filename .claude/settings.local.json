@@ -5,7 +5,11 @@
       "WebSearch",
       "Bash(xargs:*)",
       "WebFetch(domain:linear.app)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(git ls-tree:*)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "linear"
+  ]
 }
