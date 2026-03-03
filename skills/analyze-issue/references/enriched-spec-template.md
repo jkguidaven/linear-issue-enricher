@@ -42,9 +42,9 @@ Use this template to produce the final agent-ready specification. Mark any infor
 ## Technical Plan
 
 ### Affected Repositories
-| Repository | Path | Relevance |
-|------------|------|-----------|
-| {repo_name} | {repo_path} | {why this repo is involved} |
+| Repository | Identifier | Relevance |
+|------------|------------|-----------|
+| {repo_name} | {org/repo} | {why this repo is involved} |
 
 ### Files to Modify
 | File | Change Description |

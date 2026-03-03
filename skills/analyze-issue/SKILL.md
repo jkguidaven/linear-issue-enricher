@@ -61,17 +61,18 @@ Steps:
      {
        "repos": {
          "backend": {
-           "path": "/absolute/path/to/backend",
+           "repo": "org/backend-repo",
            "labels": ["backend", "api"]
          },
          "frontend": {
-           "path": "/absolute/path/to/frontend",
+           "repo": "org/frontend-repo",
            "labels": ["frontend", "ui"]
          }
        }
      }
      ```
-   - Ask the user if they want to provide a repo path manually to continue, or abort.
+     Where `repo` is the GitHub `owner/repo` identifier (e.g. `acme/backend-api`).
+   - Ask the user if they want to provide a repo identifier manually to continue, or abort.
 3. Parse the configuration and store the repo mappings.
 
 ## Phase 3: Determine Relevant Repos
@@ -85,10 +86,11 @@ Steps:
 4. If no repos match:
    - Show the user the issue's labels and the configured repos with their labels.
    - Ask: "None of the issue's labels match a configured repo. Which repos should I explore?" and let the user pick.
-5. For each matched repo, verify the path exists on disk:
-   - If a path does not exist, warn: "Repo `<name>` path `<path>` does not exist. Skipping."
-   - Remove it from the list.
-6. If no valid repos remain after verification, ask the user to provide a repo path manually.
+5. For each matched repo, shallow-clone it into a temp directory:
+   - Run: `gh repo clone <repo> /tmp/linear-enrichment/<name> -- --depth 1`
+   - If the clone fails, warn: "Failed to clone repo `<name>` (`<repo>`). Skipping." and remove it from the list.
+   - Store the cloned path (`/tmp/linear-enrichment/<name>`) for use in Phase 5.
+6. If no repos were successfully cloned, ask the user to provide a repo identifier manually.
 
 ## Phase 4: Score Issue Readiness
 
@@ -115,7 +117,7 @@ Steps:
 For each relevant repo, explore the codebase to fill gaps identified in scoring.
 
 Steps:
-1. For each repo from Phase 3:
+1. For each repo from Phase 3 (using the cloned local paths from the shallow clone):
    a. **Find affected files**: Based on the issue description, search for files related to the feature, component, or bug mentioned. Use Glob to find files by name patterns and Grep to search for relevant keywords, function names, or identifiers.
    b. **Trace dependencies**: For key files identified, look at imports and references to understand the dependency graph. Identify upstream callers and downstream dependencies.
    c. **Extract code context**: Read the most relevant files (limit to key sections) to extract:
@@ -172,3 +174,5 @@ Steps:
 5. If the user declines or the score is below 4:
    - Tell the user the spec has been presented locally only.
    - If the score is below 4, suggest: "This issue may benefit from discussion with the stakeholder before further enrichment."
+6. **Cleanup**: Remove all cloned repo directories:
+   - Run: `rm -rf /tmp/linear-enrichment/` to clean up all temporary clones.

@@ -6,7 +6,8 @@
       "Bash(xargs:*)",
       "WebFetch(domain:linear.app)",
       "WebFetch(domain:github.com)",
-      "Bash(git ls-tree:*)"
+      "Bash(git ls-tree:*)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   },
   "enabledMcpjsonServers": [
