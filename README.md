@@ -28,27 +28,27 @@ The plugin includes an `.mcp.json` that configures the official Linear MCP serve
 
 ### 2. Create a repo mapping file
 
-Create `~/.claude/linear-enrichment.json` to tell the plugin which local repositories correspond to which Linear labels:
+Create `~/.claude/linear-enrichment.json` to tell the plugin which GitHub repositories correspond to which Linear labels:
 
 ```json
 {
   "repos": {
     "backend": {
-      "path": "/absolute/path/to/backend",
+      "repo": "org/backend-repo",
       "labels": ["backend", "api"]
     },
     "frontend": {
-      "path": "/absolute/path/to/frontend",
+      "repo": "org/frontend-repo",
       "labels": ["frontend", "ui"]
     }
   }
 }
 ```
 
-- **path**: Absolute path to the repo on your machine.
+- **repo**: GitHub `owner/repo` identifier (e.g. `jkguidaven/linear-issue-enricher`).
 - **labels**: Linear labels that indicate an issue is relevant to this repo (matched case-insensitively).
 
-You can add as many repos as you need. If an issue's labels don't match any configured repo, the plugin will ask you which repos to explore.
+You can add as many repos as you need. Repos are shallow-cloned to `/tmp/linear-enrichment/` on first use and updated via `git pull` on subsequent runs. If an issue's labels don't match any configured repo, the plugin will ask you which repos to explore.
 
 ## Usage
 
@@ -117,7 +117,7 @@ The plugin produces a structured specification using the template in [`skills/an
 | "Linear MCP is not authenticated" | Run `/mcp` inside Claude Code to connect your Linear account |
 | "Could not find issue" | Double-check the identifier — make sure you have access to that issue in Linear |
 | "No configuration file found" | Create `~/.claude/linear-enrichment.json` following the format above |
-| Repo path doesn't exist | The plugin will warn and skip that repo — update the path in your config |
+| Repo clone fails | Ensure `gh` CLI is authenticated (`gh auth login`) and the `owner/repo` identifier is correct |
 | No label match | The plugin will show available repos and ask you which to explore |
 
 ## License
