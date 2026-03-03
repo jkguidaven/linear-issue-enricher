@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:mcp.linear.app)",
+      "WebSearch",
+      "Bash(xargs:*)",
+      "WebFetch(domain:linear.app)",
+      "WebFetch(domain:github.com)"
+    ]
+  }
+}

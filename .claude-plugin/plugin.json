@@ -1,0 +1,5 @@
+{
+  "name": "linear",
+  "description": "Fetches Linear issues, scores them for agent-readiness, explores codebases to fill gaps, and produces enriched specifications.",
+  "version": "1.0.0"
+}
