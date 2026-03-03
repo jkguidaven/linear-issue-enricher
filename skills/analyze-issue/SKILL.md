@@ -86,11 +86,15 @@ Steps:
 4. If no repos match:
    - Show the user the issue's labels and the configured repos with their labels.
    - Ask: "None of the issue's labels match a configured repo. Which repos should I explore?" and let the user pick.
-5. For each matched repo, shallow-clone it into a temp directory:
-   - Run: `gh repo clone <repo> /tmp/linear-enrichment/<name> -- --depth 1`
-   - If the clone fails, warn: "Failed to clone repo `<name>` (`<repo>`). Skipping." and remove it from the list.
-   - Store the cloned path (`/tmp/linear-enrichment/<name>`) for use in Phase 5.
-6. If no repos were successfully cloned, ask the user to provide a repo identifier manually.
+5. For each matched repo, ensure a local clone is available at `/tmp/linear-enrichment/<name>`:
+   - If the directory already exists and is a valid git repo, update it:
+     - Run: `git -C /tmp/linear-enrichment/<name> pull --ff-only` to fetch the latest changes.
+     - If the pull fails, warn: "Failed to update repo `<name>`. Continuing with existing clone."
+   - If the directory does not exist, clone it:
+     - Run: `gh repo clone <repo> /tmp/linear-enrichment/<name> -- --depth 1`
+     - If the clone fails, warn: "Failed to clone repo `<name>` (`<repo>`). Skipping." and remove it from the list.
+   - Store the local path (`/tmp/linear-enrichment/<name>`) for use in Phase 5.
+6. If no repos are available (no existing clones and all new clones failed), ask the user to provide a repo identifier manually.
 
 ## Phase 4: Score Issue Readiness
 
@@ -117,7 +121,7 @@ Steps:
 For each relevant repo, explore the codebase to fill gaps identified in scoring.
 
 Steps:
-1. For each repo from Phase 3 (using the cloned local paths from the shallow clone):
+1. For each repo from Phase 3 (using the local paths at `/tmp/linear-enrichment/<name>`):
    a. **Find affected files**: Based on the issue description, search for files related to the feature, component, or bug mentioned. Use Glob to find files by name patterns and Grep to search for relevant keywords, function names, or identifiers.
    b. **Trace dependencies**: For key files identified, look at imports and references to understand the dependency graph. Identify upstream callers and downstream dependencies.
    c. **Extract code context**: Read the most relevant files (limit to key sections) to extract:
@@ -174,5 +178,4 @@ Steps:
 5. If the user declines or the score is below 4:
    - Tell the user the spec has been presented locally only.
    - If the score is below 4, suggest: "This issue may benefit from discussion with the stakeholder before further enrichment."
-6. **Cleanup**: Remove all cloned repo directories:
-   - Run: `rm -rf /tmp/linear-enrichment/` to clean up all temporary clones.
+6. **Note**: Cloned repos in `/tmp/linear-enrichment/` are kept for future runs. They will be updated via `git pull` on the next invocation.

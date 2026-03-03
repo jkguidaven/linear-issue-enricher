@@ -14,7 +14,7 @@ Linear issues are often written by non-dev stakeholders in plain English, lackin
 Clone the repository:
 
 ```bash
-git clone https://github.com/<your-username>/linear-issue-enricher.git
+git clone https://github.com/jkguidaven/linear-issue-enricher.git
 ```
 
 ## Configuration
