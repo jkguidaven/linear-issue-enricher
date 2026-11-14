@@ -98,6 +98,10 @@ Issues are classified based on their total score:
 
 The full rubric is in [`skills/analyze-issue/references/scoring-rubric.md`](skills/analyze-issue/references/scoring-rubric.md).
 
+### How well the scores match a person
+
+[`evals/`](evals/) scores 12 sample tickets and compares the results with human scores. In the latest run, the plugin gave the same readiness class on 9 of 12 tickets, and every criterion score was within one point of the human score. Its most common miss is scoring technical mapping a little high. See [`evals/results.md`](evals/results.md).
+
 ## Output
 
 The plugin produces a structured specification using the template in [`skills/analyze-issue/references/enriched-spec-template.md`](skills/analyze-issue/references/enriched-spec-template.md), which includes:
